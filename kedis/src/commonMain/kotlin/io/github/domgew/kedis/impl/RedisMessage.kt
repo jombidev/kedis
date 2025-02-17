@@ -3,6 +3,10 @@ package io.github.domgew.kedis.impl
 import com.ionspin.kotlin.bignum.integer.BigInteger
 import io.ktor.utils.io.ByteReadChannel
 import io.ktor.utils.io.ByteWriteChannel
+import io.ktor.utils.io.readByte
+import io.ktor.utils.io.readFully
+import io.ktor.utils.io.writeByte
+import io.ktor.utils.io.writeFully
 import kotlin.reflect.KClass
 
 internal sealed class RedisMessage {

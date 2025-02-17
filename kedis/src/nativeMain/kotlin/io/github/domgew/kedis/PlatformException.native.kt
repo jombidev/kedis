@@ -1,5 +1,8 @@
 package io.github.domgew.kedis
 
+import kotlinx.io.EOFException
+import kotlinx.io.IOException
+
 internal actual suspend fun <T> commoniseConnectException(
     block: suspend () -> T,
 ): T =
@@ -25,15 +28,15 @@ internal actual suspend fun <T> commoniseNetworkExceptions(
 ): T =
     try {
         block()
-    } catch (ex: io.ktor.utils.io.errors.EOFException) {
+    } catch (ex: EOFException) {
         throw KedisException.GenericNetworkException(
             cause = ex,
         )
-    } catch (ex: io.ktor.utils.io.core.EOFException) {
+    } catch (ex: EOFException) {
         throw KedisException.GenericNetworkException(
             cause = ex,
         )
-    } catch (ex: io.ktor.utils.io.errors.IOException) {
+    } catch (ex: IOException) {
         throw KedisException.GenericNetworkException(
             cause = ex,
         )

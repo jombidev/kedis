@@ -1,14 +1,17 @@
 package io.github.domgew.kedis.impl
 
 import com.ionspin.kotlin.bignum.integer.BigInteger
-import io.github.domgew.kedis.utils.TestByteWriteChannel
+import io.ktor.utils.io.ByteChannel
 import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.InternalAPI
+import io.ktor.utils.io.core.readBytes
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertIs
 import kotlinx.coroutines.test.runTest
+import kotlinx.io.InternalIoApi
 
 // see https://redis.io/docs/reference/protocol-spec/
 class RedisMessageTest {
@@ -741,14 +744,15 @@ class RedisMessageTest {
         return actual
     }
 
+    @OptIn(InternalAPI::class, InternalIoApi::class)
     private suspend fun <T : RedisMessage> encodeToString(
         value: T,
     ): String =
-        TestByteWriteChannel()
+        ByteChannel()
             .also {
                 value.writeTo(it)
             }
-            .getAndRestWithoutLocking()
+            .writeBuffer.buffer.readBytes()
             .decodeToString()
 
     private suspend fun decodeFromString(
